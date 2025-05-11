@@ -1,0 +1,97 @@
+openapi: 3.0.0
+info:
+  title: Task Service API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8083/api/tasks
+    description: Local server for Task Service
+paths:
+  /:
+    get:
+      summary: Get all tasks
+      responses:
+        '200':
+          description: List of all tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    due_date:
+                      type: string
+                      format: date-time
+                    created_by:
+                      type: string
+                    team_id:
+                      type: integer
+    post:
+      summary: Create a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                due_date:
+                  type: string
+                  format: date-time
+                created_by:
+                  type: string
+                team_id:
+                  type: integer
+                assignees:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '201':
+          description: Task created successfully
+  /{taskId}:
+    get:
+      summary: Get task details
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  due_date:
+                    type: string
+                    format: date-time
+                  created_by:
+                    type: string
+                  team_id:
+                    type: integer
+                  assignees:
+                    type: array
+                    items:
+                      type: integer
+        '404':
+          description: Task not found

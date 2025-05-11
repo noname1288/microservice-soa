@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   service-a:
-    build: ./services/service-a
+    build: ./services/team-service
     ports:
       - "5001:5000"
 

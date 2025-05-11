@@ -1,0 +1,168 @@
+openapi: 3.0.0
+info:
+  title: Team Service API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8082/api/team
+    description: Local server for Team Service
+paths:
+  /:
+    post:
+      summary: Create a new team
+      operationId: createTeam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Team A
+      responses:
+        '201':
+          description: Team created successfully
+  /{userId}:
+    get:
+      summary: Get teams by user ID
+      operationId: getTeamsByUserId
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the user to retrieve their teams
+      responses:
+        '200':
+          description: List of teams for the specified user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    name:
+                      type: string
+                      example: Team A
+  /{teamId}:
+    get:
+      summary: Get team details by team ID
+      operationId: getTeamDetails
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the team to retrieve
+      responses:
+        '200':
+          description: Team details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: Team A
+                  leaderId:
+                    type: integer
+                    example: 101
+                  memberIds:
+                    type: array
+                    items:
+                      type: integer
+                      example: 102
+    delete:
+      summary: Delete a team by team ID
+      operationId: deleteTeam
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the team to delete
+      responses:
+        '204':
+          description: Team deleted successfully
+  /add-member:
+    post:
+      summary: Add a member to a team
+      operationId: addMember
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID of the user to add
+        - name: teamId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID of the team to add the user to
+      responses:
+        '201':
+          description: Member added successfully
+  /remove-member:
+    delete:
+      summary: Remove a member from a team
+      operationId: removeMember
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID of the user to remove
+        - name: teamId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID of the team to remove the user from
+      responses:
+        '204':
+          description: Member removed successfully
+  /is-leader:
+    get:
+      summary: Check if a user is the leader of a team
+      operationId: isLeader
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID of the user to check
+        - name: teamId
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID of the team to check
+      responses:
+        '200':
+          description: User is the leader
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isLeader:
+                    type: boolean
+                    example: true
+        '404':
+          description: Team or user not found

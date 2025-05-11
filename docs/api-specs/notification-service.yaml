@@ -1,0 +1,29 @@
+openapi: 3.0.0
+info:
+  title: Notification Service API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8084/api/notifications
+    description: Local server for Notification Service
+paths:
+  /send:
+    post:
+      summary: Send a notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                message:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Notification sent successfully
+        '400':
+          description: Bad request
