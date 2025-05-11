@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "team")
 public class Team {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
 
@@ -32,7 +32,7 @@ public class Team {
     // Team.java
     public Long getLeaderId() {
         return memberships.stream()
-                .filter(member -> "LEADER".equalsIgnoreCase(member.getRole()))
+                .filter(member -> "ADMIN".equalsIgnoreCase(member.getRole()))
                 .map(TeamMembership::getUserId)
                 .findFirst()
                 .orElse(null);

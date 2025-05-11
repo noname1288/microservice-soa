@@ -32,7 +32,7 @@ public class TeamService {
         TeamRepository.save(team);
         log.info("Team created with ID: {}", team.getId());
 
-        teamMembershipService.createTeamMembership(request.getUserId(), team.getId(), Role.ADMIN);
+        teamMembershipService.createTeamMembership(request.getUserId(), team, Role.ADMIN);
     }
     // Xóa team
     public void deleteTeam(Long teamId) {

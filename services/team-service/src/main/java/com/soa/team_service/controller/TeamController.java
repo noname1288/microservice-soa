@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.soa.team_service.dto.CreateTeamRequest;
 import com.soa.team_service.dto.ListTeamResponse;
 import com.soa.team_service.dto.TeamResponse;
+import com.soa.team_service.entity.Team;
 import com.soa.team_service.service.TeamMembershipService;
 import com.soa.team_service.service.TeamService;
 import com.soa.team_service.util.Role;
@@ -42,9 +43,9 @@ public class TeamController {
     }
 
     //lấy danh sách team theo userId
-    @GetMapping("/{userID}")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ListTeamResponse> getTeamByUserId(@PathVariable Long userId) {
+    public List<ListTeamResponse> getTeamByUserId(@RequestParam("userId") Long userId) {
         return teamService.getTeamByUserId(userId);
     }
 
@@ -66,7 +67,8 @@ public class TeamController {
     @PostMapping("/add-member")
     @ResponseStatus(HttpStatus.CREATED)
     public void addMember(@RequestParam("userId") Long userId, @RequestParam("teamId") Long teamId) {
-        teamMembershipService.createTeamMembership(userId, teamId, Role.MEMBER);
+        Team team = teamService.getTeamById(teamId);
+        teamMembershipService.createTeamMembership(userId, team, Role.MEMBER);
     }
 
     //xóa thành viên

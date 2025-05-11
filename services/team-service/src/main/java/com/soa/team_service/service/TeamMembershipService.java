@@ -18,10 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 public class TeamMembershipService {
 
     private final TeamMembershipRepository teamMembershipRepository;
-    private final TeamService teamService;
 
-    public void createTeamMembership(Long userId, Long teamId, Role role) {
-        Team team = teamService.getTeamById(teamId);
+    public void createTeamMembership(Long userId, Team team, Role role) {
         TeamMembership teamMembership = TeamMembership.builder()
                 .userId(userId)
                 .team(team)
