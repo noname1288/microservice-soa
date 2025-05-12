@@ -3,7 +3,7 @@ info:
   title: Team Service API
   version: 1.0.0
 servers:
-  - url: http://localhost:8081/api/team
+  - url: http://localhost:8082/api/team
     description: Local server for Team Service
 paths:
   /:
