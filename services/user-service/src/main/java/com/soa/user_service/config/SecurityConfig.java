@@ -7,18 +7,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/api/users/register", "/api/users/login").permitAll()
-                                .anyRequest().authenticated()
-                );
+                        .anyRequest().permitAll()
+                )
+                .formLogin(form -> form.disable()) // Tắt form login
+                .httpBasic(httpBasic -> httpBasic.disable()); // Tắt httpBasic (để không sử dụng đăng nhập cơ bản)
         return http.build();
     }
 

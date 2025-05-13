@@ -1,7 +1,5 @@
 package com.soa.team_service.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TeamResponse {
-    private Long id;
-    private String name;
-    // leader
-    private Long leaderId;
-    // members
-    private List<TeamMember> members;
+public class TeamMember {
+    Long id;
+    String name;
+    String email;
 }
