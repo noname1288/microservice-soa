@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ResponseMember {
     Long id;
-    String username;
+    String name;
     String email;
 }
