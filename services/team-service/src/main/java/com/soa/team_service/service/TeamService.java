@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.soa.team_service.dto.CreateTeamRequest;
 import com.soa.team_service.dto.ListMemberResponse;
@@ -14,6 +13,7 @@ import com.soa.team_service.dto.TeamResponse;
 import com.soa.team_service.entity.Team;
 import com.soa.team_service.entity.TeamMembership;
 import com.soa.team_service.repository.TeamRepository;
+import com.soa.team_service.repository.HttpClient.UserClient;
 import com.soa.team_service.util.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,7 @@ public class TeamService {
 
     private final TeamRepository TeamRepository;
     private final TeamMembershipService teamMembershipService;
-    private final WebClient webClient;
-    
+    private final UserClient userClient; 
     // Tạo team
     public void createTeam(CreateTeamRequest request) {
         Team team = Team.builder()
@@ -50,12 +49,7 @@ public class TeamService {
         RequestGetListMember listIdUser = RequestGetListMember.builder()
                 .listIdUser(team.getMemberIds())
                 .build();
-        ListMemberResponse listMemberResponse = webClient.post()
-                .uri("http://127.0.0.1:8081/api/users/list-member")
-                .bodyValue(listIdUser) 
-                .retrieve()
-                .bodyToMono(ListMemberResponse.class)
-                .block();
+        ListMemberResponse listMemberResponse = userClient.listMembers(listIdUser);
         return TeamResponse.builder()
                 .id(team.getId())
                 .name(team.getName())
