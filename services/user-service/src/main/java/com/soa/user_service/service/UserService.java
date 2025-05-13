@@ -113,7 +113,7 @@ public class UserService {
         List<User> users = userRepository.findAllById(listIdUser);
         
         List<ResponseMember> members = users.stream()
-                .map(user -> new ResponseMember(user.getId(), user.getUsername(), user.getEmail()))  // Đổi thành MemberDTO
+                .map(user -> new ResponseMember(user.getId(), user.getName(), user.getEmail()))  // Đổi thành MemberDTO
                 .collect(Collectors.toList());
         return Map.of(
             "success", "true",
