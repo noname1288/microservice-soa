@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/api/team")
+@RequestMapping()
 @RequiredArgsConstructor
 public class TeamController {
 
