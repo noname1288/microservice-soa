@@ -6,8 +6,6 @@ plugins {
 
 group = "com.soa"
 version = "0.0.1-SNAPSHOT"
-val springCloudVersion = "2024.0.0"
-
 
 java {
 	toolchain {
@@ -25,6 +23,7 @@ repositories {
 	mavenCentral()
 }
 
+extra["springCloudVersion"] = "2024.0.1"
 
 
 dependencies {
@@ -48,7 +47,7 @@ dependencies {
 
 dependencyManagement {
 	imports {
-		mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
 	}
 }
 
