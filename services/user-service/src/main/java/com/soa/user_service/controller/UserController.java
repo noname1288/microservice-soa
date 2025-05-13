@@ -1,6 +1,7 @@
 package com.soa.user_service.controller;
 
 import com.soa.user_service.dto.RequestCreateUser;
+import com.soa.user_service.dto.RequestGetListMember;
 import com.soa.user_service.dto.RequestLogin;
 import com.soa.user_service.dto.RequestRefresh;
 import com.soa.user_service.dto.RequestValidate;
@@ -30,13 +31,18 @@ public class UserController {
         return ResponseEntity.ok(userService.authenticate(username, password));
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/refreshtoken")
     public ResponseEntity<?> refresh(@RequestBody RequestRefresh request) {        
-        return ResponseEntity.ok(request.getRefreshToken());
+        return ResponseEntity.ok(userService.refreshToken(request.getRefreshToken()));
     }
 
     @PostMapping("/validate")
     public ResponseEntity<?> validate(@RequestBody RequestValidate request) {
         return ResponseEntity.ok(userService.validateToken(request.getToken()));
+    }
+
+    @PostMapping("/list-member")
+    public ResponseEntity<?> getListMember(@RequestBody RequestGetListMember request) {
+        return ResponseEntity.ok(userService.getListMember(request.getListIdUser()));
     }
 }

@@ -31,7 +31,7 @@ public class JwtUtil {
     @PostConstruct
     public void init() {
         byte[] decodedKey = Base64.getDecoder().decode(jwtSecret);
-        this.key = new SecretKeySpec(decodedKey, SignatureAlgorithm.HS512.getJcaName());
+        this.key = new SecretKeySpec(decodedKey, SignatureAlgorithm.HS256.getJcaName());
     }
 
     public String generateAccessToken(String username) {
@@ -39,18 +39,19 @@ public class JwtUtil {
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessExpiration))
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String generateRefreshToken(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
-    }
+    return Jwts.builder()
+        .setSubject(username)
+        .claim("type", "refresh")
+        .setIssuedAt(new Date())
+        .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
+        .signWith(key, SignatureAlgorithm.HS256)
+        .compact();
+}
 
     public boolean validateToken(String token, String username) {
         return extractUsername(token).equals(username) && !isTokenExpired(token);
@@ -64,7 +65,7 @@ public class JwtUtil {
         return extractClaims(token).getExpiration().before(new Date());
     }
 
-    private Claims extractClaims(String token) {
+    public Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
