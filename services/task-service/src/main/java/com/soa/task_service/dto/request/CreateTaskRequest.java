@@ -1,6 +1,5 @@
 package com.soa.task_service.dto.request;
 
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

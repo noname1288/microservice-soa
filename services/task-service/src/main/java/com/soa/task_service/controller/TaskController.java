@@ -30,7 +30,7 @@ public class TaskController {
     }
 
     @GetMapping("/{task_id}")
-    ApiResponse<TaskResponse> getTask (@PathVariable Long task_id){
+    ApiResponse<TaskResponse> getTask (@PathVariable("task_id") Long task_id){
         ApiResponse<TaskResponse> apiResponse = new ApiResponse<>();
 
         apiResponse.setResult(taskService.getTask(task_id));

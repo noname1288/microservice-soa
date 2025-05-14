@@ -1,6 +1,5 @@
 package com.soa.gateway.service;
 
-import com.soa.gateway.dto.ApiResponse;
 import com.soa.gateway.dto.request.IntrospectRequest;
 import com.soa.gateway.dto.response.IntrospectResponse;
 import com.soa.gateway.repository.UserServiceClientRepository;

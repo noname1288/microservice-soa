@@ -6,7 +6,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.Objects;
 
 @ControllerAdvice //thông báo với spring: đây là nơi handling exception
 public class GlobalExceptionHandler {
