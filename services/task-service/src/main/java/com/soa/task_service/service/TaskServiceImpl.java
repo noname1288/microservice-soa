@@ -14,15 +14,17 @@ import com.soa.task_service.exception.ErrorCode;
 import com.soa.task_service.mapper.TaskMapper;
 import com.soa.task_service.reposity.TaskAssigneeRepository;
 import com.soa.task_service.reposity.TaskRepository;
-import com.soa.task_service.reposity.httpclient.NotificationClient;
 import com.soa.task_service.reposity.httpclient.TeamClient;
 import com.soa.task_service.reposity.httpclient.UserClient;
+import com.soa.task_service.wrapper.NotificationServiceCaller;
 
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -38,8 +40,10 @@ public class TaskServiceImpl implements TaskService {
     TaskAssigneeRepository taskAssigneeRepository;
     TaskMapper taskMapper;
     TeamClient teamClient;
-    NotificationClient notificationClient;
     UserClient userClient;
+
+    @Autowired
+    private NotificationServiceCaller notificationServiceCaller;
 
     //create new task
     @Override
@@ -98,7 +102,7 @@ public class TaskServiceImpl implements TaskService {
                 .dueDate(task.getDueDate().toString())
                 .build();
         
-        notificationClient.sendEmail(requestSendEmail);
+        notificationServiceCaller.sendEmailAsync(requestSendEmail);
 
         return response;
     }
