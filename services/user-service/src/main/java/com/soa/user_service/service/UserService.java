@@ -106,6 +106,7 @@ public class UserService {
         Map<String, String> response = new HashMap<>();
         response.put("accessToken", jwtUtil.generateAccessToken(username));
         response.put("refreshToken", jwtUtil.generateRefreshToken(username));
+        response.put("userId", user.getId().toString());
         user.getId();
         return response;
     }
@@ -119,6 +120,17 @@ public class UserService {
         return Map.of(
             "success", "true",
             "members", members
+        );
+    }
+
+    public Map<String, Object> getAllUser() {
+        List<User> users = userRepository.findAll();
+        List<ResponseMember> members = users.stream()
+                .map(user -> new ResponseMember(user.getId(), user.getName(), user.getEmail()))  // Đổi thành MemberDTO
+                .collect(Collectors.toList());
+        return Map.of(
+            "success", "true",
+            "users", members
         );
     }
 }

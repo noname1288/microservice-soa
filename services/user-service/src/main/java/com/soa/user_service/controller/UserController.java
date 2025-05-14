@@ -12,6 +12,9 @@ import com.soa.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping()
@@ -45,4 +48,10 @@ public class UserController {
     public ResponseEntity<?> getListMember(@RequestBody RequestGetListMember request) {
         return ResponseEntity.ok(userService.getListMember(request.getListIdUser()));
     }
+    @GetMapping("/all-user")
+    public ResponseEntity<?> getMethodName() {
+        return ResponseEntity.ok(userService.getAllUser());
+        
+    }
+    
 }
