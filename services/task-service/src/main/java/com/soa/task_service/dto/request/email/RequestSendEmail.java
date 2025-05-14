@@ -1,4 +1,4 @@
-package com.soa.notification_service.dto;
+package com.soa.task_service.dto.request.email;
 
 import java.util.List;
 

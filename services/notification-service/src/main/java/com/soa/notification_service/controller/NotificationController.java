@@ -10,7 +10,7 @@ import com.soa.notification_service.dto.RequestSendEmail;
 import com.soa.notification_service.service.NotificationService;
 
 @RestController
-@RequestMapping("/api/notifications")
+@RequestMapping
 public class NotificationController {
 
     @Autowired
