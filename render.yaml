@@ -1,0 +1,97 @@
+# ==== SERVICES =========
+services:
+  - name: gateway
+    type: web
+    env: docker
+    rootDir: services/gateway
+    autoDeploy: true
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: APP_SERVICES_USER
+        value: https://user-service.onrender.com
+      - key: APP_SERVICES_TEAM
+        value: https://team-service.onrender.com
+      - key: APP_SERVICES_TASK
+        value: https://task-service.onrender.com
+      - key: APP_SERVICES_NOTIFICATION
+        value: https://notification-service.onrender.com
+
+  - name: user-service
+    type: web
+    env: docker
+    rootDir: services/user-service
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase: { name: user-db, property: connectionString }
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase: { name: user-db, property: user }
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase: { name: user-db, property: password }
+
+  - name: team-service
+    type: web
+    env: docker
+    rootDir: services/team-service
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase: { name: team-db, property: connectionString }
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase: { name: team-db, property: user }
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase: { name: team-db, property: password }
+
+  - name: task-service
+    type: web
+    env: docker
+    rootDir: services/task-service
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase: { name: task-db, property: connectionString }
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase: { name: task-db, property: user }
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase: { name: task-db, property: password }
+      - key: APP_SERVICES_NOTIFICATION
+        value: https://notification-service.onrender.com
+
+  - name: notification-service
+    type: web
+    env: docker
+    rootDir: services/notification-service
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+
+# ==== DATABASES =========
+databases:
+  - name: user-db
+    databaseName: user_service
+    user: root
+    plan: free
+  - name: team-db
+    databaseName: team_service
+    user: root
+    plan: free
+  - name: task-db
+    databaseName: task_service
+    user: root
+    plan: free
