@@ -3,159 +3,124 @@ info:
   title: Team Service API
   version: 1.0.0
 servers:
-  - url: http://localhost:8082/api/team
-    description: Local server for Team Service
+  - url: http://localhost:8082
+    description: Localhost Team Service
+
 paths:
-  /:
+  /create:
     post:
       summary: Create a new team
-      operationId: createTeam
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: Team A
+              $ref: '#/components/schemas/CreateTeamRequest'
       responses:
         '201':
-          description: Team created successfully
-  /{userId}:
+          description: Team created
+
+  /list_team:
     get:
-      summary: Get teams by user ID
-      operationId: getTeamsByUserId
+      summary: Get all teams for a user
       parameters:
         - name: userId
-          in: path
+          in: query
           required: true
           schema:
             type: integer
-          description: ID of the user to retrieve their teams
       responses:
         '200':
-          description: List of teams for the specified user
+          description: List of teams the user belongs to
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      example: 1
-                    name:
-                      type: string
-                      example: Team A
+                  $ref: '#/components/schemas/ListTeamResponse'
+
   /{teamId}:
     get:
-      summary: Get team details by team ID
-      operationId: getTeamDetails
+      summary: Get team details
       parameters:
         - name: teamId
           in: path
           required: true
           schema:
             type: integer
-          description: ID of the team to retrieve
       responses:
         '200':
-          description: Team details
+          description: Team detail
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    example: 1
-                  name:
-                    type: string
-                    example: Team A
-                  leaderId:
-                    type: integer
-                    example: 101
-                  memberIds:
-                    type: array
-                    items:
-                      type: integer
-                      example: 102
+                $ref: '#/components/schemas/TeamResponse'
+
     delete:
-      summary: Delete a team by team ID
-      operationId: deleteTeam
+      summary: Delete a team
       parameters:
         - name: teamId
           in: path
           required: true
           schema:
             type: integer
-          description: ID of the team to delete
       responses:
         '204':
-          description: Team deleted successfully
+          description: Team deleted
+
   /add-member:
     post:
       summary: Add a member to a team
-      operationId: addMember
       parameters:
         - name: userId
           in: query
           required: true
           schema:
             type: integer
-          description: ID of the user to add
         - name: teamId
           in: query
           required: true
           schema:
             type: integer
-          description: ID of the team to add the user to
       responses:
         '201':
-          description: Member added successfully
+          description: Member added
+
   /remove-member:
     delete:
       summary: Remove a member from a team
-      operationId: removeMember
       parameters:
         - name: userId
           in: query
           required: true
           schema:
             type: integer
-          description: ID of the user to remove
         - name: teamId
           in: query
           required: true
           schema:
             type: integer
-          description: ID of the team to remove the user from
       responses:
         '204':
-          description: Member removed successfully
+          description: Member removed
+
   /is-leader:
     get:
-      summary: Check if a user is the leader of a team
-      operationId: isLeader
+      summary: Check if user is leader of a team
       parameters:
         - name: userId
           in: query
           required: true
           schema:
             type: integer
-          description: ID of the user to check
         - name: teamId
           in: query
           required: true
           schema:
             type: integer
-          description: ID of the team to check
       responses:
         '200':
-          description: User is the leader
+          description: Leader check result
           content:
             application/json:
               schema:
@@ -163,6 +128,47 @@ paths:
                 properties:
                   isLeader:
                     type: boolean
-                    example: true
         '404':
           description: Team or user not found
+
+components:
+  schemas:
+    CreateTeamRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        userId:
+          type: integer
+
+    ListTeamResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+    TeamMember:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+
+    TeamResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        leaderId:
+          type: integer
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMember'

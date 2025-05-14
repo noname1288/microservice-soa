@@ -2,68 +2,38 @@ openapi: 3.0.0
 info:
   title: Task Service API
   version: 1.0.0
+
 servers:
-  - url: http://localhost:8083/api/tasks
-    description: Local server for Task Service
+  - url: http://localhost:8083
+    description: Localhost Task Service
+
 paths:
-  /:
-    get:
-      summary: Get all tasks
-      responses:
-        '200':
-          description: List of all tasks
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    title:
-                      type: string
-                    description:
-                      type: string
-                    due_date:
-                      type: string
-                      format: date-time
-                    created_by:
-                      type: string
-                    team_id:
-                      type: integer
+  /create:
     post:
-      summary: Create a new task
+      summary: Create new task
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                description:
-                  type: string
-                due_date:
-                  type: string
-                  format: date-time
-                created_by:
-                  type: string
-                team_id:
-                  type: integer
-                assignees:
-                  type: array
-                  items:
-                    type: integer
+              $ref: '#/components/schemas/CreateTaskRequest'
       responses:
         '201':
-          description: Task created successfully
-  /{taskId}:
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseTaskResponse'
+        '403':
+          description: User does not have permission
+        '409':
+          description: Task already exists
+
+  /{task_id}:
     get:
-      summary: Get task details
+      summary: Get task by ID
       parameters:
-        - name: taskId
+        - name: task_id
           in: path
           required: true
           schema:
@@ -74,24 +44,123 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  title:
-                    type: string
-                  description:
-                    type: string
-                  due_date:
-                    type: string
-                    format: date-time
-                  created_by:
-                    type: string
-                  team_id:
-                    type: integer
-                  assignees:
-                    type: array
-                    items:
-                      type: integer
+                $ref: '#/components/schemas/ApiResponseTaskResponse'
         '404':
           description: Task not found
+
+  /all:
+    get:
+      summary: Get all tasks
+      responses:
+        '200':
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseListTaskResponse'
+
+  /delete/{taskId}:
+    delete:
+      summary: Delete task by ID
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseMessage'
+        '404':
+          description: Task not found
+
+components:
+  schemas:
+
+    CreateTaskRequest:
+      type: object
+      properties:
+        taskName:
+          type: string
+        description:
+          type: string
+        dueDate:
+          type: string
+          format: date-time
+        teamId:
+          type: integer
+        assigneeUserIds:
+          type: array
+          items:
+            type: integer
+        createBy:
+          type: integer
+      required: [taskName, dueDate, teamId, createBy]
+
+    TaskResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        taskName:
+          type: string
+        description:
+          type: string
+        dueDate:
+          type: string
+          format: date-time
+        createAt:
+          type: string
+          format: date-time
+        createBy:
+          type: integer
+        teamId:
+          type: integer
+        assigneeIds:
+          type: array
+          items:
+            type: integer
+
+    Receiver:
+      type: object
+      properties:
+        id:
+          type: integer
+        nameAssignee:
+          type: string
+        email:
+          type: string
+
+    ApiResponseTaskResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        result:
+          $ref: '#/components/schemas/TaskResponse'
+
+    ApiResponseListTaskResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskResponse'
+
+    ApiResponseMessage:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string

@@ -2,28 +2,63 @@ openapi: 3.0.0
 info:
   title: Notification Service API
   version: 1.0.0
+
 servers:
-  - url: http://localhost:8084/api/notifications
-    description: Local server for Notification Service
+  - url: http://localhost:8084
+    description: Local Notification Service
+
 paths:
   /send:
     post:
-      summary: Send a notification
+      summary: Send notification emails to assignees
+      description: Gửi email thông báo công việc mới cho danh sách người nhận
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                user_id:
-                  type: integer
-                message:
-                  type: string
-                email:
-                  type: string
+              $ref: '#/components/schemas/RequestSendEmail'
       responses:
         '200':
           description: Notification sent successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Notification sent successfully!
         '400':
           description: Bad request
+
+components:
+  schemas:
+    RequestSendEmail:
+      type: object
+      properties:
+        Receivers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Receiver'
+        titleTask:
+          type: string
+          example: Thiết kế trang quản trị
+        descriptionTask:
+          type: string
+          example: Thiết kế giao diện dashboard với biểu đồ, bảng thống kê
+        dueDate:
+          type: string
+          format: date
+          example: 2025-05-20
+
+    Receiver:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 101
+        nameAssignee:
+          type: string
+          example: Lê Quang Tèo
+        email:
+          type: string
+          format: email
+          example: lequangteo@example.com

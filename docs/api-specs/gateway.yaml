@@ -1,14 +1,36 @@
 openapi: 3.0.0
 info:
-  title: Gateway API
+  title: API Gateway
   version: 1.0.0
+
 servers:
   - url: http://localhost:8080
-    description: Gateway server for all services
+    description: API Gateway server
+
 paths:
+  /validate:
+    post:
+      summary: Validate JWT token via user service
+      description: Dùng để xác thực token gửi từ client, sẽ gọi về user-service để kiểm tra hợp lệ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntrospectRequest'
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntrospectResponse'
+        '401':
+          description: Invalid or expired token
+
   /users/{userId}:
     get:
-      summary: Get user details
+      summary: Get user details by ID (proxy to user-service)
       parameters:
         - name: userId
           in: path
@@ -17,7 +39,7 @@ paths:
             type: integer
       responses:
         '200':
-          description: User details retrieved successfully
+          description: User details
           content:
             application/json:
               schema:
@@ -34,7 +56,7 @@ paths:
 
   /teams/{teamId}:
     get:
-      summary: Get team details
+      summary: Get team details (proxy to team-service)
       parameters:
         - name: teamId
           in: path
@@ -43,7 +65,7 @@ paths:
             type: integer
       responses:
         '200':
-          description: Team details retrieved successfully
+          description: Team details
           content:
             application/json:
               schema:
@@ -62,7 +84,7 @@ paths:
 
   /tasks/{taskId}:
     get:
-      summary: Get task details
+      summary: Get task details (proxy to task-service)
       parameters:
         - name: taskId
           in: path
@@ -71,7 +93,7 @@ paths:
             type: integer
       responses:
         '200':
-          description: Task details retrieved successfully
+          description: Task details
           content:
             application/json:
               schema:
@@ -79,16 +101,44 @@ paths:
                 properties:
                   id:
                     type: integer
-                  title:
+                  taskName:
                     type: string
                   description:
                     type: string
-                  due_date:
+                  dueDate:
                     type: string
                     format: date-time
-                  created_by:
-                    type: string
-                  team_id:
+                  createBy:
+                    type: integer
+                  teamId:
                     type: integer
         '404':
           description: Task not found
+
+components:
+  schemas:
+    IntrospectRequest:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+        - token
+
+    IntrospectResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        username:
+          type: string
+
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        result:
+          type: object
