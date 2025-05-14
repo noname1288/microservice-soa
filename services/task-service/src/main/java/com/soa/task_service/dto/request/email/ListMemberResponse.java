@@ -1,4 +1,4 @@
-package com.soa.team_service.dto;
+package com.soa.task_service.dto.request.email;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ListMemberResponse {
     String success;
-    List<TeamMember> members;
+    List<Receiver> members;
 }

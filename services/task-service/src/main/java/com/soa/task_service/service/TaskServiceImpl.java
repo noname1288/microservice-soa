@@ -1,6 +1,10 @@
 package com.soa.task_service.service;
 
 import com.soa.task_service.dto.request.CreateTaskRequest;
+import com.soa.task_service.dto.request.email.ListMemberResponse;
+import com.soa.task_service.dto.request.email.Receiver;
+import com.soa.task_service.dto.request.email.RequestGetListMember;
+import com.soa.task_service.dto.request.email.RequestSendEmail;
 import com.soa.task_service.dto.response.CheckingLeaderReponse;
 import com.soa.task_service.dto.response.TaskResponse;
 import com.soa.task_service.entity.Task;
@@ -10,7 +14,10 @@ import com.soa.task_service.exception.ErrorCode;
 import com.soa.task_service.mapper.TaskMapper;
 import com.soa.task_service.reposity.TaskAssigneeRepository;
 import com.soa.task_service.reposity.TaskRepository;
+import com.soa.task_service.reposity.httpclient.NotificationClient;
 import com.soa.task_service.reposity.httpclient.TeamClient;
+import com.soa.task_service.reposity.httpclient.UserClient;
+
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +38,8 @@ public class TaskServiceImpl implements TaskService {
     TaskAssigneeRepository taskAssigneeRepository;
     TaskMapper taskMapper;
     TeamClient teamClient;
+    NotificationClient notificationClient;
+    UserClient userClient;
 
     //create new task
     @Override
@@ -74,6 +83,23 @@ public class TaskServiceImpl implements TaskService {
 
         TaskResponse response = taskMapper.toTaskResponse(task); //mapper
         taskMapper.mapAssignees(response,task , assignees);
+
+        // lấy thông tin receiver từ user service
+        RequestGetListMember requestGetListMember = RequestGetListMember.builder()
+                .listIdUser(assigneeUserIds)
+                .build();
+        ListMemberResponse listMemberResponse = userClient.listMembers(requestGetListMember);
+        List<Receiver> receivers = listMemberResponse.getMembers();
+        //send email
+        RequestSendEmail requestSendEmail = RequestSendEmail.builder()
+                .Receivers(receivers)
+                .titleTask(task.getTaskName())
+                .descriptionTask(task.getDescription())
+                .dueDate(task.getDueDate().toString())
+                .build();
+        
+        notificationClient.sendEmail(requestSendEmail);
+
         return response;
     }
 

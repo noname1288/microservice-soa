@@ -1,7 +1,6 @@
-package com.soa.team_service.dto;
+package com.soa.task_service.dto.request.email;
 
 import java.util.List;
-
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ListMemberResponse {
-    String success;
-    List<TeamMember> members;
+public class RequestGetListMember {
+    private List<Long> listIdUser;
 }
