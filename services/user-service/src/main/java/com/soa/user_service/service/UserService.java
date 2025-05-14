@@ -106,6 +106,7 @@ public class UserService {
         Map<String, String> response = new HashMap<>();
         response.put("accessToken", jwtUtil.generateAccessToken(username));
         response.put("refreshToken", jwtUtil.generateRefreshToken(username));
+        user.getId();
         return response;
     }
 

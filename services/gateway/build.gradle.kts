@@ -20,9 +20,14 @@ repositories {
 extra["springCloudVersion"] = "2024.0.1"
 
 dependencies {
-	implementation("org.springframework.cloud:spring-cloud-starter-config")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+	implementation("org.springframework.cloud:spring-cloud-starter-gateway")
+
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
 }
 
 dependencyManagement {
