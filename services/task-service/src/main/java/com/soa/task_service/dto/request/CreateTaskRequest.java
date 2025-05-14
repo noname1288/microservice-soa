@@ -19,6 +19,6 @@ public class CreateTaskRequest {
     private Long teamId;
     private List<Long> assigneeUserIds;
 //    private String createAt;
-//    private String createBy;
+    private Long createBy; // user ask to create task
 //    @Size(min = 2, message = "enum key like "TASK_EXISTED" ")
 }

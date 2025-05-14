@@ -1,6 +1,7 @@
 package com.soa.task_service.service;
 
 import com.soa.task_service.dto.request.CreateTaskRequest;
+import com.soa.task_service.dto.response.CheckingLeaderReponse;
 import com.soa.task_service.dto.response.TaskResponse;
 import com.soa.task_service.entity.Task;
 import com.soa.task_service.entity.TaskAssignee;
@@ -9,6 +10,7 @@ import com.soa.task_service.exception.ErrorCode;
 import com.soa.task_service.mapper.TaskMapper;
 import com.soa.task_service.reposity.TaskAssigneeRepository;
 import com.soa.task_service.reposity.TaskRepository;
+import com.soa.task_service.reposity.httpclient.TeamClient;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -28,19 +30,26 @@ public class TaskServiceImpl implements TaskService {
     TaskRepository taskRepository;
     TaskAssigneeRepository taskAssigneeRepository;
     TaskMapper taskMapper;
+    TeamClient teamClient;
 
     //create new task
     @Override
     public TaskResponse createTask(CreateTaskRequest request) {
         //Kiểm tra quyền admin
+        CheckingLeaderReponse checkingLeaderReponse = teamClient.isLeader(
+                request.getCreateBy(), request.getTeamId()
+        );
 
+        if (Boolean.FALSE.equals(checkingLeaderReponse.getIsLeader())) {
+            throw new AppException(ErrorCode.NOT_PERMISSION);
+        }
         //Lưu task
         Task task = Task.builder()
                 .taskName(request.getTaskName())
                 .description(request.getDescription())
                 .dueDate(request.getDueDate())
                 .createAt(LocalDateTime.now())
-                .createBy(10000L) // parse from jwt
+                .createBy(request.getCreateBy()) // parse from jwt
                 .teamId(request.getTeamId())
                 .build();
 
