@@ -1,14 +1,19 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:25-jdk-bullseye
-
-# Set the working directory in the container
+# ----------- STAGE 1: BUILD với Gradle 8.13 + JDK 21 -----------
+FROM gradle:8.13-jdk21 AS build
 WORKDIR /app
 
-# Copy the application's JAR file to the container
-COPY target/user-service-0.0.1-SNAPSHOT.jar app.jar
+# Copy project vào container
+COPY . .
 
-# Expose the port the app runs on
-EXPOSE 8081
+# Build ứng dụng Spring Boot (file .jar)
+RUN gradle bootJar --no-daemon
 
-# Command to run the application
+# ----------- STAGE 2: RUN với JRE nhẹ -----------
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+
+# Copy file jar từ stage build
+COPY --from=build /app/build/libs/*.jar app.jar
+
+# Mặc định chạy ứng dụng
 ENTRYPOINT ["java", "-jar", "app.jar"]

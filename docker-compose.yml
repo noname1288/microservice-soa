@@ -1,16 +1,98 @@
-version: '3.8'
+version: "3.8"
+
 services:
-  service-a:
-    build: ./services/team-service
+  # ---------------------- USER SERVICE ----------------------
+  user-service:
+    build:
+      context: ./services/user-service
     ports:
-      - "5001:5000"
+      - "8081:8080"
+    depends_on:
+      - user-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://user-db:3306/user_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
 
-  service-b:
-    build: ./services/service-b
+  user-db:
+    image: mysql:8
+    container_name: user-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: user_db
     ports:
-      - "5002:5000"
+      - "3307:3306"
+    volumes:
+      - user_db_data:/var/lib/mysql
 
+  # ---------------------- TEAM SERVICE ----------------------
+  team-service:
+    build:
+      context: ./services/team-service
+    ports:
+      - "8082:8080"
+    depends_on:
+      - team-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://team-db:3306/team_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+
+  team-db:
+    image: mysql:8
+    container_name: team-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: team_db
+    ports:
+      - "3308:3306"
+    volumes:
+      - team_db_data:/var/lib/mysql
+
+  # ---------------------- TASK SERVICE ----------------------
+  task-service:
+    build:
+      context: ./services/task-service
+    ports:
+      - "8083:8080"
+    depends_on:
+      - task-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://task-db:3306/task_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+
+  task-db:
+    image: mysql:8
+    container_name: task-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: task_db
+    ports:
+      - "3309:3306"
+    volumes:
+      - task_db_data:/var/lib/mysql
+
+  # ---------------------- NOTIFICATION SERVICE ----------------------
+  notification-service:
+    build:
+      context: ./services/notification-service
+    ports:
+      - "8084:8080"
+
+  # ---------------------- API GATEWAY ----------------------
   gateway:
-    build: ./gateway
+    build:
+      context: ./services/gateway
     ports:
-      - "8080:8000"
+      - "8888:8080"
+    depends_on:
+      - user-service
+      - team-service
+      - task-service
+      - notification-service
+
+volumes:
+  user_db_data:
+  team_db_data:
+  task_db_data:
