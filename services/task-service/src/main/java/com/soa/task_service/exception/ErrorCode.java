@@ -11,7 +11,8 @@ import lombok.experimental.FieldDefaults;
 public enum ErrorCode {
     UNCATEGORIZED_EXCEPTION(9999, "Uncategorized Exception"),
     TASK_EXISTED(1010, "Task's name has already existed"),
-    TASK_NOT_EXISTED(1011, "Your task has not existed");
+    TASK_NOT_EXISTED(1011, "Your task has not existed"),
+    NOT_PERMISSION(1012,"Only team leader can create tasks" );
 
     int code;
     String message;

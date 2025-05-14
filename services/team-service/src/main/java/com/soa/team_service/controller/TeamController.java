@@ -36,14 +36,14 @@ public class TeamController {
     private final TeamMembershipService teamMembershipService;
 
     //tạo team
-    @PostMapping
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public void CreateTeam(@RequestBody CreateTeamRequest request) {
         teamService.createTeam(request);
     }
 
     //lấy danh sách team theo userId
-    @GetMapping
+    @GetMapping("/list_team")
     @ResponseStatus(HttpStatus.OK)
     public List<ListTeamResponse> getTeamByUserId(@RequestParam("userId") Long userId) {
         return teamService.getTeamByUserId(userId);
